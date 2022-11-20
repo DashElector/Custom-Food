@@ -1,0 +1,83 @@
+options:
+	food_item: cookie
+	food_item_name: &f&lSUGAR RUSH
+	food_item_lore: &7&omakes you very energentic!
+	food_item_cooldown_time: 1 minute
+	food_item_cooldown_message: &cYou are still on cooldown!
+	food_item_remove_amount: 1
+
+#---------EVENTS----------
+
+	event_1: apply potion of speed
+	event_1_amplifier: 2
+	event_1_duration: 100 seconds
+#
+	event_2: apply potion of nausea
+	event_2_amplifier: 1
+	event_2_duration: 10 seconds
+#
+	event_3: apply potion of haste
+	event_3_amplifier: 255
+	event_3_duration: 1 hour
+	
+#---------COMMAND----------
+
+	command_get: /yourfooditem
+	command_give_amount: 64
+	command_permission: op
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+on right click:
+    set {_held} to 1 of player's held item
+    if {_held} is 1 {@food_item} named "{@food_item_name}" with lore "{@food_item_lore}":
+        if {ccooldown::%player's uuid%} is false:
+            cancel event
+            {@event_1} of tier {@event_1_amplifier} to the player for {@event_1_duration}
+            {@event_2} of tier {@event_2_amplifier} to the player for {@event_2_duration}
+            {@event_3} of tier {@event_3_amplifier} to the player for {@event_3_duration}
+            remove {@food_item_remove_amount} {@food_item} named "{@food_item_name}" from player
+            set {ccooldown::%player's uuid%} to true
+            wait {@food_item_cooldown_time}
+            set {ccooldown::%player's uuid%} to false
+        else:
+            cancel event
+            send "{@food_item_cooldown_message}"
+
+command {@command_get}:
+    permission: {@command_permission}
+    trigger:
+        give player {@command_give_amount} {@food_item} named "{@food_item_name}" with lore "{@food_item_lore}"
+
+on join:
+    set {ccooldown::%player's uuid%} to false
